@@ -93,7 +93,7 @@ async fn feed_snapshots(
     mango_oracles: Vec<Pubkey>,
     sender: &async_channel::Sender<Message>,
 ) -> anyhow::Result<()> {
-    let rpc_client = http::connect_with_options::<AccountsDataClient>(&config.rpc_http_url, true)
+    let rpc_client = http::connect::<AccountsDataClient>(&config.rpc_http_url)
         .await
         .map_err_anyhow()?;
 
@@ -215,7 +215,7 @@ pub fn start(config: Config, mango_oracles: Vec<Pubkey>, sender: async_channel::
     let mut interval_between_snapshots = time::interval(config.snapshot_interval);
 
     tokio::spawn(async move {
-        let rpc_client = http::connect_with_options::<MinimalClient>(&config.rpc_http_url, true)
+        let rpc_client = http::connect::<MinimalClient>(&config.rpc_http_url)
             .await
             .expect("always Ok");
 

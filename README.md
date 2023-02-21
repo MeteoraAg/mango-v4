@@ -23,6 +23,12 @@ available under GPL.
 
 See DEVELOPING.md
 
+# Test
+`cargo-test-sbf --features enable-gpl`
+
+# Build
+`anchor build -- --features enable-gpl`
+
 ### Dependencies
 
 - rust version 1.65.0

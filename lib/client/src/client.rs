@@ -181,8 +181,8 @@ impl MangoClient {
     ) -> anyhow::Result<(Pubkey, Signature)> {
         let account = Pubkey::find_program_address(
             &[
-                group.as_ref(),
                 b"MangoAccount".as_ref(),
+                group.as_ref(),                
                 owner.pubkey().as_ref(),
                 &account_num.to_le_bytes(),
             ],
@@ -222,6 +222,41 @@ impl MangoClient {
         .await?;
 
         Ok((account, txsig))
+    }
+
+    pub async fn close_account(
+        client: &Client,
+        group: Pubkey,
+        owner: &Keypair,
+        account: Pubkey,
+    ) -> anyhow::Result<Signature> {       
+        let ix = Instruction {
+            program_id: mango_v4::id(),
+            accounts: anchor_lang::ToAccountMetas::to_account_metas(
+                &mango_v4::accounts::AccountClose {
+                    group,
+                    account,
+                    owner: owner.pubkey(),         
+                    sol_destination:  owner.pubkey(),                               
+                    token_program: anchor_spl::token::ID,
+                },
+                None,
+            ),
+            data: anchor_lang::InstructionData::data(&mango_v4::instruction::AccountClose {
+               force_close: false
+            }),
+        };
+
+        let txsig = TransactionBuilder {
+            instructions: vec![ix],
+            address_lookup_tables: vec![],
+            payer: owner.pubkey(),
+            signers: vec![owner],
+        }
+        .send_and_confirm(&client)
+        .await?;
+
+        Ok(txsig)
     }
 
     /// Conveniently creates a RPC based client
