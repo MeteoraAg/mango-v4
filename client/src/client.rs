@@ -173,7 +173,7 @@ impl MangoClient {
         let account = Pubkey::find_program_address(
             &[
                 b"MangoAccount".as_ref(),
-                group.as_ref(),                
+                group.as_ref(),
                 owner.pubkey().as_ref(),
                 &account_num.to_le_bytes(),
             ],
@@ -219,21 +219,21 @@ impl MangoClient {
         group: Pubkey,
         owner: &Keypair,
         account: Pubkey,
-    ) -> anyhow::Result<Signature> {       
+    ) -> anyhow::Result<Signature> {
         let ix = Instruction {
             program_id: mango_v4::id(),
             accounts: anchor_lang::ToAccountMetas::to_account_metas(
                 &mango_v4::accounts::AccountClose {
                     group,
                     account,
-                    owner: owner.pubkey(),         
-                    sol_destination:  owner.pubkey(),                               
+                    owner: owner.pubkey(),
+                    sol_destination: owner.pubkey(),
                     token_program: anchor_spl::token::ID,
                 },
                 None,
             ),
             data: anchor_lang::InstructionData::data(&mango_v4::instruction::AccountClose {
-               force_close: false
+                force_close: false,
             }),
         };
 
@@ -274,6 +274,34 @@ impl MangoClient {
         let group_context = MangoGroupContext::new_from_rpc(&rpc, group).await?;
 
         Self::new_detail(client, account, owner, group_context, account_fetcher)
+    }
+
+    /// DANHEROUS: function shuld be only used for vault-keeper
+    pub async fn new_for_existing_account_with_payer(
+        client: Client,
+        account: Pubkey,
+        owner: Pubkey,
+        payer: Arc<Keypair>,
+    ) -> anyhow::Result<Self> {
+        let rpc = client.rpc_async();
+        let account_fetcher = Arc::new(CachedAccountFetcher::new(Arc::new(RpcAccountFetcher {
+            rpc,
+        })));
+        let mango_account =
+            account_fetcher_fetch_mango_account(&*account_fetcher, &account).await?;
+        let group = mango_account.fixed.group;
+        if mango_account.fixed.owner != owner {
+            anyhow::bail!(
+                "bad owner for account: expected {} got {}",
+                mango_account.fixed.owner,
+                owner
+            );
+        }
+
+        let rpc = client.rpc_async();
+        let group_context = MangoGroupContext::new_from_rpc(&rpc, group).await?;
+
+        Self::new_detail(client, account, payer, group_context, account_fetcher)
     }
 
     /// Allows control of AccountFetcher and externally created MangoGroupContext
