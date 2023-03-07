@@ -1,35 +1,15 @@
 {
-  "name": "@blockworks-foundation/mango-v4",
+  "name": "@mercurial-finance/mango-v4",
   "version": "0.4.3",
   "description": "Typescript Client for mango-v4 program.",
-  "repository": "https://github.com/blockworks-foundation/mango-v4",
-  "author": {
-    "name": "Blockworks Foundation",
-    "email": "hello@blockworks.foundation",
-    "url": "https://blockworks.foundation"
-  },
-  "main": "dist/cjs/src/index.js",
-  "module": "dist/esm/src/index.js",
-  "types": "dist/types/src/index.d.ts",
-  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist/**"
   ],
   "scripts": {
-    "build": "npm run build:esm; npm run build:cjs",
-    "build:cjs": "tsc -p tsconfig.cjs.json",
-    "build:esm": "tsc -p tsconfig.esm.json",
-    "test": "ts-mocha ts/client/**/*.spec.ts --timeout 300000",
-    "clean": "rm -rf dist",
-    "example1-user": "ts-node ts/client/src/scripts/example1-user.ts",
-    "example1-admin": "ts-node ts/client/src/scripts/example1-admin.ts",
-    "format": "prettier --check ./ts",
-    "lint": "eslint ./ts --ext ts --ext tsx --ext js --quiet",
-    "typecheck": "tsc --noEmit --pretty",
-    "prepare": "npm run build",
-    "prebuild": "npm run clean",
-    "prepublishOnly": "npm run validate && npm run build",
-    "validate": "npm run typecheck && npm run lint && npm run format"
+    "build": "tsup"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
@@ -46,6 +26,7 @@
     "prettier": "^2.0.5",
     "ts-mocha": "^10.0.0",
     "ts-node": "^9.1.1",
+    "tsup": "^6.6.3",
     "typedoc": "^0.22.5",
     "typescript": "^4.4.4"
   },
