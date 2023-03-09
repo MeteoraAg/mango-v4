@@ -1,6 +1,6 @@
 {
   "name": "@mercurial-finance/mango-v4",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Typescript Client for mango-v4 program.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
