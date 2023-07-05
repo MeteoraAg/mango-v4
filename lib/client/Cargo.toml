@@ -30,7 +30,7 @@ solana-client = { workspace = true }
 solana-rpc = { workspace = true }
 solana-sdk = { workspace = true }
 solana-address-lookup-table-program = { workspace = true }
-mango-feeds-connector = "0.1.1"
+# mango-feeds-connector = "0.1.1"
 spl-associated-token-account = "1.0.3"
 thiserror = "1.0.31"
 log = "0.4"

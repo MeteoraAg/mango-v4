@@ -252,6 +252,7 @@ impl MangoClient {
             address_lookup_tables: vec![],
             payer: owner.pubkey(),
             signers: vec![owner],
+            config: client.transaction_builder_config,
         }
         .send_and_confirm(&client)
         .await?;
